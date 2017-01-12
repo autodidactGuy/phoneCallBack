@@ -49,21 +49,22 @@ public class MainActivity extends AppCompatActivity {
     //--------------------------------------------------
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         switch (requestCode) {
             case PERMISSION_REQUEST: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0) {
-                    Boolean permissionGranted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
-                    if (permissionGranted) {
-                        // Permission was granted.
-                        callPhoneManager();
-                    } else {
-                        // Permission denied.
-                        PermissionUtils.alertAndFinish(this);
-                    }
-                }
+                permissionGranted(grantResults);
                 return;
+            }
+        }
+    }
+
+    private void permissionGranted(int[] grantResults) {
+        if (grantResults.length > 0) {
+            Boolean permissionGranted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+            if (permissionGranted) {
+                callPhoneManager();
+            } else {
+                PermissionUtils.alertAndFinish(this);
             }
         }
     }

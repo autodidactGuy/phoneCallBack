@@ -24,14 +24,13 @@ public class PhoneCallback extends PhoneStateListener {
     // Constants
     //--------------------------------------------------
 
-    public static String LOG_TAG = "PhoneCallback";
+    public static final String LOG_TAG = "PhoneCallback";
 
     //--------------------------------------------------
-    // Constants
+    // Attributes
     //--------------------------------------------------
 
     private TextView mTextView;
-    private String mText;
 
     //--------------------------------------------------
     // Constructor
@@ -39,6 +38,38 @@ public class PhoneCallback extends PhoneStateListener {
 
     public PhoneCallback(TextView textView) {
         mTextView = textView;
+    }
+
+    //--------------------------------------------------
+    // Methods
+    //--------------------------------------------------
+
+    private String serviceStateToString(int serviceState) {
+        switch (serviceState) {
+            case ServiceState.STATE_IN_SERVICE:
+                return "STATE_IN_SERVICE";
+            case ServiceState.STATE_OUT_OF_SERVICE:
+                return "STATE_OUT_OF_SERVICE";
+            case ServiceState.STATE_EMERGENCY_ONLY:
+                return "STATE_EMERGENCY_ONLY";
+            case ServiceState.STATE_POWER_OFF:
+                return "STATE_POWER_OFF";
+            default:
+                return "UNKNOWN_STATE";
+        }
+    }
+
+    private String callStateToString(int state) {
+        switch (state) {
+            case TelephonyManager.CALL_STATE_IDLE:
+                return "\nonCallStateChanged: CALL_STATE_IDLE, ";
+            case TelephonyManager.CALL_STATE_RINGING:
+                return "\nonCallStateChanged: CALL_STATE_RINGING, ";
+            case TelephonyManager.CALL_STATE_OFFHOOK:
+                return "\nonCallStateChanged: CALL_STATE_OFFHOOK, ";
+            default:
+                return "\nUNKNOWN_STATE: " + state + ", ";
+        }
     }
 
     //--------------------------------------------------
@@ -79,81 +110,56 @@ public class PhoneCallback extends PhoneStateListener {
     @Override
     public void onServiceStateChanged(ServiceState serviceState) {
         super.onServiceStateChanged(serviceState);
-        Log.i(LOG_TAG, "onServiceStateChanged: " + serviceState.toString());
-        Log.i(LOG_TAG, "onServiceStateChanged: getOperatorAlphaLong " + serviceState.getOperatorAlphaLong());
-        Log.i(LOG_TAG, "onServiceStateChanged: getOperatorAlphaShort " + serviceState.getOperatorAlphaShort());
-        Log.i(LOG_TAG, "onServiceStateChanged: getOperatorNumeric " + serviceState.getOperatorNumeric());
-        Log.i(LOG_TAG, "onServiceStateChanged: getIsManualSelection " + serviceState.getIsManualSelection());
-        Log.i(LOG_TAG, "onServiceStateChanged: getRoaming " + serviceState.getRoaming());
-
-        switch (serviceState.getState()) {
-            case ServiceState.STATE_IN_SERVICE:
-                Log.i(LOG_TAG, "onServiceStateChanged: STATE_IN_SERVICE");
-                break;
-            case ServiceState.STATE_OUT_OF_SERVICE:
-                Log.i(LOG_TAG, "onServiceStateChanged: STATE_OUT_OF_SERVICE");
-                break;
-            case ServiceState.STATE_EMERGENCY_ONLY:
-                Log.i(LOG_TAG, "onServiceStateChanged: STATE_EMERGENCY_ONLY");
-                break;
-            case ServiceState.STATE_POWER_OFF:
-                Log.i(LOG_TAG, "onServiceStateChanged: STATE_POWER_OFF");
-                break;
-        }
+        String message = "onServiceStateChanged: " + serviceState + "\n";
+        message += "onServiceStateChanged: getOperatorAlphaLong " + serviceState.getOperatorAlphaLong() + "\n";
+        message += "onServiceStateChanged: getOperatorAlphaShort " + serviceState.getOperatorAlphaShort() + "\n";
+        message += "onServiceStateChanged: getOperatorNumeric " + serviceState.getOperatorNumeric() + "\n";
+        message += "onServiceStateChanged: getIsManualSelection " + serviceState.getIsManualSelection() + "\n";
+        message += "onServiceStateChanged: getRoaming " + serviceState.getRoaming() + "\n";
+        Log.i(LOG_TAG, message);
+        Log.i(LOG_TAG, "onServiceStateChanged: " + serviceStateToString(serviceState.getState()));
     }
 
     @Override
     public void onCallStateChanged(int state, String incomingNumber) {
         super.onCallStateChanged(state, incomingNumber);
-        switch (state) {
-            case TelephonyManager.CALL_STATE_IDLE:
-                mText += "\nonCallStateChanged: CALL_STATE_IDLE, ";
-                break;
-            case TelephonyManager.CALL_STATE_RINGING:
-                mText += "\nonCallStateChanged: CALL_STATE_RINGING, ";
-                break;
-            case TelephonyManager.CALL_STATE_OFFHOOK:
-                mText += "\nonCallStateChanged: CALL_STATE_OFFHOOK, ";
-                break;
-            default:
-                mText += "\nUNKNOWN_STATE: " + state + ", ";
-                break;
-        }
-        mText += "incomingNumber: " + incomingNumber;
-        mTextView.setText(mText);
+        callStateToString(state);
+        String message = callStateToString(state) + "incomingNumber: " + incomingNumber;
+        mTextView.setText(message);
     }
 
     @Override
     public void onCellLocationChanged(CellLocation location) {
         super.onCellLocationChanged(location);
+        String message = "";
         if (location instanceof GsmCellLocation) {
             GsmCellLocation gcLoc = (GsmCellLocation) location;
-            Log.i(LOG_TAG, "onCellLocationChanged: GsmCellLocation " + gcLoc.toString());
-            Log.i(LOG_TAG, "onCellLocationChanged: GsmCellLocation getCid " + gcLoc.getCid());
-            Log.i(LOG_TAG, "onCellLocationChanged: GsmCellLocation getLac " + gcLoc.getLac());
-            Log.i(LOG_TAG, "onCellLocationChanged: GsmCellLocation getPsc" + gcLoc.getPsc()); // Requires min API 9
+            message += "onCellLocationChanged: GsmCellLocation " + gcLoc + "\n";
+            message += "onCellLocationChanged: GsmCellLocation getCid " + gcLoc.getCid() + "\n";
+            message += "onCellLocationChanged: GsmCellLocation getLac " + gcLoc.getLac() + "\n";
+            message += "onCellLocationChanged: GsmCellLocation getPsc" + gcLoc.getPsc(); // Requires min API 9
+            Log.i(LOG_TAG, message);
         } else if (location instanceof CdmaCellLocation) {
             CdmaCellLocation ccLoc = (CdmaCellLocation) location;
-            Log.i(LOG_TAG, "onCellLocationChanged: CdmaCellLocation " + ccLoc.toString());
-            Log.i(LOG_TAG, "onCellLocationChanged: CdmaCellLocation getBaseStationId " + ccLoc.getBaseStationId());
-            Log.i(LOG_TAG, "onCellLocationChanged: CdmaCellLocation getBaseStationLatitude " + ccLoc.getBaseStationLatitude());
-            Log.i(LOG_TAG, "onCellLocationChanged: CdmaCellLocation getBaseStationLongitude" + ccLoc.getBaseStationLongitude());
-            Log.i(LOG_TAG, "onCellLocationChanged: CdmaCellLocation getNetworkId " + ccLoc.getNetworkId());
-            Log.i(LOG_TAG, "onCellLocationChanged: CdmaCellLocation getSystemId " + ccLoc.getSystemId());
+            message += "onCellLocationChanged: CdmaCellLocation " + ccLoc + "\n";;
+            message += "onCellLocationChanged: CdmaCellLocation getBaseStationId " + ccLoc.getBaseStationId() + "\n";;
+            message += "onCellLocationChanged: CdmaCellLocation getBaseStationLatitude " + ccLoc.getBaseStationLatitude() + "\n";;
+            message += "onCellLocationChanged: CdmaCellLocation getBaseStationLongitude" + ccLoc.getBaseStationLongitude() + "\n";;
+            message += "onCellLocationChanged: CdmaCellLocation getNetworkId " + ccLoc.getNetworkId() + "\n";;
+            message += "onCellLocationChanged: CdmaCellLocation getSystemId " + ccLoc.getSystemId();
+            Log.i(LOG_TAG, message);
         } else {
-            Log.i(LOG_TAG, "onCellLocationChanged: " + location.toString());
+            Log.i(LOG_TAG, "onCellLocationChanged: " + location);
         }
     }
 
     @Override
     public void onCallForwardingIndicatorChanged(boolean changed) {
         super.onCallForwardingIndicatorChanged(changed);
-        Log.i(LOG_TAG, "onCallForwardingIndicatorChanged: " + changed);
     }
 
     @Override
     public void onMessageWaitingIndicatorChanged(boolean changed) {
         super.onMessageWaitingIndicatorChanged(changed);
-        Log.i(LOG_TAG, "onMessageWaitingIndicatorChanged: " + changed);
     }
 }
