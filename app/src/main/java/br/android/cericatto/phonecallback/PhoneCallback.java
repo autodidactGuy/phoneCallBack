@@ -30,7 +30,7 @@ public class PhoneCallback extends PhoneStateListener {
     // Attributes
     //--------------------------------------------------
 
-    private TextView mTextView;
+    private final TextView mTextView;
 
     //--------------------------------------------------
     // Constructor
