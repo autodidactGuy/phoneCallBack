@@ -116,8 +116,8 @@ public class PhoneCallback extends PhoneStateListener {
         message += "onServiceStateChanged: getOperatorNumeric " + serviceState.getOperatorNumeric() + "\n";
         message += "onServiceStateChanged: getIsManualSelection " + serviceState.getIsManualSelection() + "\n";
         message += "onServiceStateChanged: getRoaming " + serviceState.getRoaming() + "\n";
+        message += "onServiceStateChanged: " + serviceStateToString(serviceState.getState();
         Log.i(LOG_TAG, message);
-        Log.i(LOG_TAG, "onServiceStateChanged: " + serviceStateToString(serviceState.getState()));
     }
 
     @Override

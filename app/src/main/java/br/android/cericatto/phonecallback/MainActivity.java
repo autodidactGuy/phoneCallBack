@@ -52,13 +52,13 @@ public class MainActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         switch (requestCode) {
             case PERMISSION_REQUEST: {
-                permissionGranted(grantResults);
+                isPermissionGranted(grantResults);
                 return;
             }
         }
     }
 
-    private void permissionGranted(int[] grantResults) {
+    private void isPermissionGranted(int[] grantResults) {
         if (grantResults.length > 0) {
             Boolean permissionGranted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
             if (permissionGranted) {
